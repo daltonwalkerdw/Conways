@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { ButtonToolbar, Dropdown, DropdownButton } from 'react-bootstrap';
+import { ButtonToolbar, } from 'react-bootstrap';
 
 class Box extends React.Component {
 	selectBox = () => {
@@ -56,6 +56,11 @@ class Buttons extends React.Component {
 
 	handleSelect = (evt) => {
 		this.props.gridSize(evt);
+		console.log(evt)
+	}
+	handleDefault = (evt) => {
+		evt = "2"
+		this.props.gridSize(evt)
 	}
 
 	render() {
@@ -80,7 +85,13 @@ class Buttons extends React.Component {
 					<button className="btn btn-default" onClick={this.props.seed}>
 					  Seed
 					</button>
-				</ButtonToolbar>
+					{/* <button className="btn btn-default" onClick={this.handleSelect} key="1">20x10</button>
+					<button className="btn btn-default" onClick={this.handleSelect} eventKey="2">50x30</button>
+					<button className="btn btn-default" onClick={this.handleSelect} eventKey="3">70x50</button>
+					 */}
+					 <button className="btn btn-default" onClick={this.handleSelect}>50x70</button>
+					 <button className="btn btn-default" onClick={this.handleDefault}>30x50</button>
+					</ButtonToolbar>
 			</div>
 			)
 	}
@@ -91,7 +102,8 @@ class Main extends React.Component {
     super();
     this.speed = 100;
     this.rows = 30
-    this.cols = 50
+	this.cols = 50
+	this.size = true
     this.state = {
       generation: 0,
       gridFull: Array(this.rows).fill().map(() => Array(this.cols).fill(false))
@@ -148,6 +160,47 @@ class Main extends React.Component {
     })
   }
 
+  gridSize = (size) => {
+	switch (size) {
+		case "1":
+			this.cols = 20;
+			this.rows = 10;
+			console.log("selected")
+		break;
+		case "2":
+			this.cols = 50;
+			this.rows = 30;
+			
+		break;
+		default:
+			this.cols = 70;
+			this.rows = 50;
+			
+	}
+	this.size = false
+	this.clear();
+
+}
+defaultSize = (size) => {
+	switch (size) {
+		case "1":
+			this.cols = 20;
+			this.rows = 10;
+			console.log("selected")
+		break;
+		case "2":
+			this.cols = 50;
+			this.rows = 30;
+		break;
+		default:
+			this.cols = 50;
+			this.rows = 30;
+	}
+
+	this.size = true
+	this.clear();
+
+}
 
   play = () => {
     let g = this.state.gridFull
@@ -182,6 +235,7 @@ class Main extends React.Component {
   render () {
     return (
       <div>
+		<div className="left">
         <h1>The Game Of Life</h1>
         <Buttons 
         playButton={this.playButton}
@@ -199,6 +253,18 @@ class Main extends React.Component {
         selectBox={this.selectBox}
         />
         <h2>Generations: {this.state.generation}</h2>
+		</div>
+		<div className={"right" + (this.state.gridSize ? "top" : "")}>
+			<div className="rulesContainer">
+				<h2>Rules:</h2>
+				<ul>
+					<li>Any live cell with fewer than two live neighbours dies, as if by underpopulation.</li>
+					<li>Any live cell with two or three live neighbours lives on to the next generation.</li>
+					<li>Any live cell with more than three live neighbours dies, as if by overpopulation.</li>
+					<li>Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.</li>
+				</ul>
+			</div>
+		</div>
       </div>
     )
   }
